@@ -3,6 +3,7 @@ import { Link, HashRouter as Router, Switch, Route } from "react-router-dom";
 import PrivateListPage from "./page/PrivateListPage";
 import PublicListPage from "./page/PublicListPage";
 import RollPage from "./page/RollPage";
+import CustomWordPage from "./page/CustomWordPage";
 import "./App.css";
 
 function App() {
@@ -26,6 +27,9 @@ function App() {
           </Route>
           <Route exact path="/public/roll">
             <RollPage />
+          </Route>
+          <Route exact path="/priviate/createWord">
+            <CustomWordPage />
           </Route>
         </Switch>
       </Router>
