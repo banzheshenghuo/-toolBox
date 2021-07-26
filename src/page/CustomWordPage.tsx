@@ -26,12 +26,17 @@ export default function CustomWordPage() {
     },
   };
 
+  useEffect(() => {
+    //* 如果 storage有数据就从中获取
+    const storageWords: any = localStorage.getItem("words");
+    setTextAreaVal(storageWords);
+  }, []);
+
   const createHighWordData = (data: string[]) => {
     setHighWords(data);
   };
 
   const updateTextAreaValue = (event: any) => {
-    console.log("event", event.target.value);
     setTextAreaVal(event.target.value);
   };
 
@@ -44,7 +49,11 @@ export default function CustomWordPage() {
       result.push(word.trim());
     }
 
-    setFinalData(result.join(" "));
+    const finalWords = result.join(" ");
+
+    setFinalData(finalWords);
+    // * set storage
+    localStorage.setItem("words", finalWords);
   };
 
   return (
@@ -57,7 +66,11 @@ export default function CustomWordPage() {
         </div>
         <div className="flex flex-1">
           <div className="w-4/5">
-            <TextArea rows={8} onChange={updateTextAreaValue} />
+            <TextArea
+              rows={8}
+              onChange={updateTextAreaValue}
+              value={textAreaVal}
+            />
           </div>
         </div>
       </div>
