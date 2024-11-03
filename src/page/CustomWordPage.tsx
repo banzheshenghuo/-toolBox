@@ -6,7 +6,6 @@ const { TextArea } = Input;
 
 export default function CustomWordPage() {
   const [textAreaVal, setTextAreaVal] = useState<any>();
-  const [finalData, setFinalData] = useState<string>();
   const [words, setWords] = useState<string[]>([]);
 
   useEffect(() => {
