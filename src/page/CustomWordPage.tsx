@@ -1,30 +1,13 @@
+import _ from "lodash";
 import { useEffect, useState } from "react";
-import Papa from "papaparse";
-import { Upload, Input, Button } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { Input, Button } from "antd";
 
 const { TextArea } = Input;
-const MARK_COLOR = "#B4FFEB";
-
-interface FileParsedData {
-  data: Array<Array<string>>;
-  errors: any[];
-  meta: Object;
-}
 
 export default function CustomWordPage() {
-  const [highWords, setHighWords] = useState<string[]>([]);
   const [textAreaVal, setTextAreaVal] = useState<any>();
   const [finalData, setFinalData] = useState<string>();
-
-  const props = {
-    name: "file",
-    showUploadList: false,
-    beforeUpload: (file: File) => {
-      csvToJson(file, createHighWordData);
-      return false;
-    },
-  };
+  const [words, setWords] = useState<string[]>([]);
 
   useEffect(() => {
     //* 如果 storage有数据就从中获取
@@ -32,39 +15,31 @@ export default function CustomWordPage() {
     setTextAreaVal(storageWords);
   }, []);
 
-  const createHighWordData = (data: string[]) => {
-    setHighWords(data);
-  };
-
   const updateTextAreaValue = (event: any) => {
     setTextAreaVal(event.target.value);
   };
 
+  // 1. remove newline
+  // 2. 转为小写字母并set map
+  // 3. 将 map 转为空格间隔的字符串
   const generateFinalWords = () => {
-    const result = highWords.slice();
+    const map = new Map();
 
-    const WordByHandArr = textAreaVal.split("\n");
+    const arr = textAreaVal.replaceAll("\n", " ").split(" ");
+    _.each(arr, (word) => {
+      map.set(word.toLowerCase(), 1);
+    });
+    const result = Array.from(map.keys());
 
-    for (const word of WordByHandArr) {
-      result.push(word.trim());
-    }
-
-    const finalWords = result.join(" ");
-
-    setFinalData(finalWords);
+    setWords(result);
     // * set storage
-    localStorage.setItem("words", finalWords);
+    localStorage.setItem("words", result.join(" "));
   };
-
+  console.log(1);
   return (
     <div>
       <div className="flex pt-20">
         <div className="flex flex-1 justify-center">
-          <Upload {...props}>
-            <Button icon={<UploadOutlined />}>上传csv</Button>
-          </Upload>
-        </div>
-        <div className="flex flex-1">
           <div className="w-4/5">
             <TextArea
               rows={8}
@@ -79,32 +54,10 @@ export default function CustomWordPage() {
           生成
         </Button>
         <div className="pt-20 w-2/4 m-auto">
-          <TextArea rows={8} value={finalData} disabled />
+          <TextArea rows={8} value={words.join(" ")} disabled />
         </div>
+        <span>共计{words.length}个单词</span>
       </div>
     </div>
   );
-}
-
-function csvToJson(file: File, cb: (data: string[]) => void) {
-  Papa.parse(file, {
-    complete: (res: FileParsedData) => {
-      cb(gerMarkColorRecord(res));
-    },
-    error: (reason) => {
-      console.error(reason);
-    },
-  });
-}
-
-function gerMarkColorRecord(res: FileParsedData): string[] {
-  const result = [];
-
-  for (const record of res.data) {
-    if (record[3] === MARK_COLOR) {
-      result.push(record[6]);
-    }
-  }
-
-  return result;
 }

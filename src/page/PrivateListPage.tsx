@@ -5,7 +5,7 @@ export default function PrivateListPage() {
     <div className="m-8 ">
       <ul>
         <li>
-          <Link to="/priviate/createWord">单词生成页面</Link>
+          <Link to="/private/createWord">单词生成页面</Link>
         </li>
       </ul>
     </div>

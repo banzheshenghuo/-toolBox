@@ -28,7 +28,7 @@ function App() {
           <Route exact path="/public/roll">
             <RollPage />
           </Route>
-          <Route exact path="/priviate/createWord">
+          <Route exact path="/private/createWord">
             <CustomWordPage />
           </Route>
         </Switch>
